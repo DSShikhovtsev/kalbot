@@ -1,0 +1,34 @@
+server:
+  port: 8085
+
+localeTag: ru-RU
+
+telegrambot:
+  username: "@kalian_test_bot"
+  botToken: "1154710882:AAFF37X_5RG5xKyQCKSY71t3ncy3X2tUSBM"
+  webHookPath: "https://83b8b421bb23.ngrok.io"
+  proxyType: "SOCKS5"
+  proxyHost: "localhost"
+  proxyPort: 9150
+
+spring:
+  datasource:
+    initialization-mode: always
+    data: classpath:data.sql
+    url: jdbc:postgresql://localhost:5433/kalbot
+    username: postgres
+    password: postgres
+
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+
+    show-sql: true
+
+  messages:
+    basename: bundle
+    fallback-to-system-locale: false
+
+config:
+  i18n: messages
