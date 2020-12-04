@@ -30,7 +30,7 @@ public class CallbackQueryServiceImpl implements CallbackQueryService {
         this.botUtils = botUtils;
         this.mainMenuService = mainMenuService;
         this.replyMessageService = replyMessageService;
-        callbackHandlers.forEach(handler -> this.callbackHandlers.put(handler.getHandlerName(), handler));
+        callbackHandlers.forEach(handler -> this.callbackHandlers.put(handler.getStateForHandling(), handler));
     }
 
     @Override

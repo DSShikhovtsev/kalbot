@@ -7,6 +7,7 @@ import kalbot.bot.handlers.service.IceBotService;
 import kalbot.bot.service.ReplyMessageService;
 import kalbot.bot.utils.Emojis;
 import kalbot.domain.UserState;
+import kalbot.exceptions.BotException;
 import kalbot.service.userstate.UserStateService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -33,14 +34,15 @@ public class BrandChoiceHandler implements InputCallbackHandler {
     @Override
     public SendMessage handle(CallbackQuery callbackQuery) {
         UserState userState = userStateService.getByChatId(Long.valueOf(callbackQuery.getFrom().getId()));
-        if (userState != null) {
-            if (callbackQuery.getData().contains("~")) {
-                userState.setState(BotState.BRAND.getText());
-            }
-            brandBotService.addTobacco(userState, callbackQuery);
-            userState.getKalian().setTobaccos(new ArrayList<>(new HashSet<>(userState.getKalian().getTobaccos()))); //TODO фу костыль
-            userStateService.save(userState);
+        if (userState == null) {
+            throw new BotException();
         }
+
+        if (callbackQuery.getData().contains("~")) {
+            userState.setState(BotState.BRAND);
+        }
+        brandBotService.addTobacco(userState, callbackQuery);
+        userStateService.save(userState);
         if (callbackQuery.getData().contains("~"))
             return iceBotService.getMessage(Long.valueOf(callbackQuery.getFrom().getId()),
                     replyMessageService.getEmojiReplyText("reply.ice", Emojis.ICE));
@@ -49,7 +51,7 @@ public class BrandChoiceHandler implements InputCallbackHandler {
     }
 
     @Override
-    public BotState getHandlerName() {
+    public BotState getStateForHandling() {
         return BotState.BRAND_CHOICE;
     }
 }

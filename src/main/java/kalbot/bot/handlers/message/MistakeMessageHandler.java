@@ -34,7 +34,7 @@ public class MistakeMessageHandler implements InputMessageHandler {
     }
 
     @Override
-    public BotState getHandlerName() {
+    public BotState getStateForHandling() {
         return BotState.MISTAKE;
     }
 }

@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "kalian", schema = "main")
@@ -37,5 +37,5 @@ public class Kalian {
     @OneToMany(targetEntity = Tobacco.class, fetch = FetchType.LAZY)
     @JoinTable(name = "kalians_tobaccos", schema = "main", joinColumns = @JoinColumn(name = "kalian_id"),
         inverseJoinColumns = @JoinColumn(name = "tobacco_id"))
-    private List<Tobacco> tobaccos;
+    private Set<Tobacco> tobaccos;
 }

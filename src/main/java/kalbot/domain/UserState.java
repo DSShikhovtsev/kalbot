@@ -1,10 +1,12 @@
 package kalbot.domain;
 
+import kalbot.bot.BotState;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,7 +24,7 @@ public class UserState {
     private Long userChatId;
 
     @Column(name = "state")
-    private String state;
+    private BotState state;
 
     @Column(name = "global_taste_id")
     private Long globalTasteId;
@@ -37,8 +39,13 @@ public class UserState {
             inverseJoinColumns = @JoinColumn(name = "tastes_id"))
     private List<Taste> tastes;
 
-    public UserState(Long userChatId, String state) {
+    public UserState(Long userChatId) {
         this.userChatId = userChatId;
-        this.state = state;
+    }
+
+    public void resetState() {
+        state = BotState.SHOW_MAIN_MENU;
+        tastes = new ArrayList<>();
+        globalTasteId = null;
     }
 }

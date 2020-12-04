@@ -16,6 +16,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,10 +57,9 @@ public class BrandBotService {
         InlineKeyboardMarkup inlineKeyboardMarkup = keyboardUtil.getInlineKeyboardMarkup();
         UserState userState = userStateService.getByChatId(chatId);
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        userState.getTastes().forEach(t -> {
-            List<Brand> brands = brandService.getAllByTasteId(t.getId());
-            /*if (brands.size() > 1) */addButtons(rowList, t, brands);
-        });
+        for (Taste t : userState.getTastes()) {
+            rowList.addAll(getButtons(t, brandService.getAllByTasteId(t.getId())));
+        }
         inlineKeyboardMarkup.setKeyboard(rowList);
         return inlineKeyboardMarkup;
     }
@@ -74,26 +76,25 @@ public class BrandBotService {
     private InlineKeyboardMarkup getCutBrandMenuData(Long chatId) {
         InlineKeyboardMarkup inlineKeyboardMarkup = keyboardUtil.getInlineKeyboardMarkup();
         UserState userState = userStateService.getByChatId(chatId);
-        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        List<Taste> tastes = userState.getTastes().stream().filter(t -> {
-            for (Tobacco tobacco : userState.getKalian().getTobaccos()) {
-                if (tobacco.getTaste().getId().equals(t.getId())) return false;
-            }
-            return true;
-        }).collect(Collectors.toList());
-        if (tastes.size() == 1) {
-            generateFinalButton(rowList, tastes.get(0), brandService.getAllByTasteId(tastes.get(0).getId()));
+        List<List<InlineKeyboardButton>> rowList;
+
+        Set<Taste> tastesInSelectedTobaccos = userState.getKalian().getTobaccos().stream().map(Tobacco::getTaste).collect(Collectors.toSet());
+        List<Taste> notResolvedTastes = userState.getTastes().stream().filter(t -> !tastesInSelectedTobaccos.contains(t)).collect(Collectors.toList());
+
+        if (notResolvedTastes.size() == 1) {
+            rowList = getFinalButtons(notResolvedTastes.get(0), brandService.getAllByTasteId(notResolvedTastes.get(0).getId()));
         } else {
-            tastes.forEach(t -> {
-                List<Brand> brands = brandService.getAllByTasteId(t.getId());
-                addButtons(rowList, t, brands);
-            });
+            rowList = new ArrayList<>();
+            for (Taste t : notResolvedTastes) {
+                rowList.addAll(getButtons(t, brandService.getAllByTasteId(t.getId())));
+            }
         }
         inlineKeyboardMarkup.setKeyboard(rowList);
         return inlineKeyboardMarkup;
     }
 
-    private void addButtons(List<List<InlineKeyboardButton>> rowList, Taste taste, List<Brand> brands) {
+    private List<List<InlineKeyboardButton>> getButtons(Taste taste, List<Brand> brands) {
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         for (Brand brand : brands) {
             List<InlineKeyboardButton> row = new ArrayList<>();
             InlineKeyboardButton button = new InlineKeyboardButton();
@@ -102,9 +103,11 @@ public class BrandBotService {
             row.add(button);
             rowList.add(row);
         }
+        return rowList;
     }
 
-    private void generateFinalButton(List<List<InlineKeyboardButton>> rowList, Taste taste, List<Brand> brands) {
+    private List<List<InlineKeyboardButton>> getFinalButtons(Taste taste, List<Brand> brands) {
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         for (Brand brand : brands) {
             List<InlineKeyboardButton> row = new ArrayList<>();
             InlineKeyboardButton button = new InlineKeyboardButton();
@@ -113,6 +116,7 @@ public class BrandBotService {
             row.add(button);
             rowList.add(row);
         }
+        return rowList;
     }
 
     public void addTobacco(UserState userState, CallbackQuery callbackQuery) {

@@ -11,6 +11,7 @@ public enum BotState {
     SHOW_HELP_MENU("Помощь"),
     AGAIN("Сбросить"),
     MISTAKE("Ошибочный вызов"),
+
     FORTRESS("Крепость"),
     GLOBAL_TASTE("Обобщенный вкус"),
     TASTE("Вкус"),

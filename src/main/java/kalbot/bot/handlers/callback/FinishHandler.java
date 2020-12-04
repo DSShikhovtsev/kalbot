@@ -37,8 +37,8 @@ public class FinishHandler implements InputCallbackHandler {
         UserState userState = userStateService.getByChatId(Long.valueOf(callbackQuery.getFrom().getId()));
         if (userState != null) {
             if (callbackQuery.getData().contains("atTime")) {
-                userState.setState(BotState.AT_TIME.getText());
-            } else userState.setState(BotState.FINISH_WORK.getText());
+                userState.setState(BotState.AT_TIME);
+            } else userState.setState(BotState.FINISH_WORK);
             userStateService.save(userState);
         }
         if (callbackQuery.getData().contains("yes")) {
@@ -57,7 +57,7 @@ public class FinishHandler implements InputCallbackHandler {
     }
 
     @Override
-    public BotState getHandlerName() {
+    public BotState getStateForHandling() {
         return BotState.ICE;
     }
 }

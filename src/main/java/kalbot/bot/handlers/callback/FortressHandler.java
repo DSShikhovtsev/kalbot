@@ -1,67 +1,48 @@
 package kalbot.bot.handlers.callback;
 
 import kalbot.bot.BotState;
-import kalbot.bot.handlers.InputMessageHandler;
-import kalbot.bot.handlers.service.FortressBotService;
+import kalbot.bot.handlers.InputCallbackHandler;
+import kalbot.bot.handlers.service.GlobalTasteBotService;
 import kalbot.bot.service.ReplyMessageService;
 import kalbot.bot.utils.Emojis;
-import kalbot.domain.Kalian;
 import kalbot.domain.UserState;
-import kalbot.service.kalian.KalianService;
+import kalbot.exceptions.BotException;
+import kalbot.service.fortress.FortressService;
 import kalbot.service.userstate.UserStateService;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.interfaces.BotApiObject;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Message;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 @Component
-public class FortressHandler implements InputMessageHandler {
+public class FortressHandler implements InputCallbackHandler {
 
     private final ReplyMessageService replyMessageService;
-    private final FortressBotService fortressBotService;
     private final UserStateService userStateService;
-    private final KalianService kalianService;
+    private final FortressService fortressService;
+    private final GlobalTasteBotService globalTasteBotService;
 
-    public FortressHandler(ReplyMessageService replyMessageService, FortressBotService fortressBotService, UserStateService userStateService, KalianService kalianService) {
+    public FortressHandler(ReplyMessageService replyMessageService, UserStateService userStateService, FortressService fortressService, GlobalTasteBotService globalTasteBotService) {
         this.replyMessageService = replyMessageService;
-        this.fortressBotService = fortressBotService;
         this.userStateService = userStateService;
-        this.kalianService = kalianService;
+        this.fortressService = fortressService;
+        this.globalTasteBotService = globalTasteBotService;
     }
 
     @Override
-    public SendMessage handle(Message message) {
-        UserState userState = userStateService.getByChatId(Long.valueOf(message.getFrom().getId()));
-        if (userState != null) {
-            userState.setState(BotState.FORTRESS.getText());
-        } else {
-            userState = new UserState(Long.valueOf(message.getFrom().getId()), BotState.FORTRESS.getText());
+    public SendMessage handle(CallbackQuery callbackQuery) {
+        UserState userState = userStateService.getByChatId(Long.valueOf(callbackQuery.getFrom().getId()));
+        if (userState == null) {
+            throw new BotException();
         }
-        userState.setTastes(new ArrayList<>());
-        userState.setKalian(initKalian(Long.valueOf(message.getFrom().getId())));
+        userState.setState(BotState.GLOBAL_TASTE);
+        userState.getKalian().setFortressId(fortressService.getByScore(Integer.valueOf(callbackQuery.getData())).getId());
         userStateService.save(userState);
-        return fortressBotService.getMessage(message.getChatId(),
-                replyMessageService.getEmojiReplyText("reply.fortress", Emojis.FORTRESS));
+        return globalTasteBotService.getMessage(Long.valueOf(callbackQuery.getFrom().getId()), userState.getKalian().getFortressId(),
+                replyMessageService.getEmojiReplyText("reply.taste.global", Emojis.TASTE_GLOBAL));
     }
 
     @Override
-    public SendMessage handleLastMessage(BotApiObject botApiObject) {
-        return null;
-    }
-
-    @Override
-    public BotState getHandlerName() {
-        return BotState.START_WORK;
-    }
-
-    private Kalian initKalian(Long chatId) {
-        Kalian kalian = new Kalian();
-        kalian.setUserChatId(chatId);
-        kalian.setDate(LocalDateTime.now());
-        kalian.setTobaccos(new ArrayList<>());
-        return kalianService.save(kalian);
+    public BotState getStateForHandling() {
+        return BotState.FORTRESS;
     }
 }

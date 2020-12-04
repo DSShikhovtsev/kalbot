@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class TasteBotService {
+public class TasteMessageService {
 
     private final TasteService tasteService;
     private final ReplyKeyboardUtil keyboardUtil;
 
-    public TasteBotService(TasteService tasteService, ReplyKeyboardUtil keyboardUtil) {
+    public TasteMessageService(TasteService tasteService, ReplyKeyboardUtil keyboardUtil) {
         this.tasteService = tasteService;
         this.keyboardUtil = keyboardUtil;
     }
@@ -65,10 +65,10 @@ public class TasteBotService {
         return reply;
     }
 
-    private InlineKeyboardMarkup getCutTasteMenuData(List<Taste> cut, Long fortress, Long globalTaste) {
+    private InlineKeyboardMarkup getCutTasteMenuData(List<Taste> selected, Long fortress, Long globalTaste) {
         InlineKeyboardMarkup inlineKeyboardMarkup = keyboardUtil.getInlineKeyboardMarkup();
         List<Taste> tastes = tasteService.getByFortressIdAndGlobalTasteId(fortress, globalTaste);
-        tastes.removeAll(cut);
+        tastes.removeAll(selected);
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         if (tastes.size() == 1) {
             generateFinalButton(rowList, tastes.get(0));

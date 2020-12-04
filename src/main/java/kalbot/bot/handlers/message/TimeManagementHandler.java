@@ -50,7 +50,7 @@ public class TimeManagementHandler implements InputMessageHandler {
     }
 
     @Override
-    public BotState getHandlerName() {
+    public BotState getStateForHandling() {
         return BotState.AT_TIME;
     }
 }

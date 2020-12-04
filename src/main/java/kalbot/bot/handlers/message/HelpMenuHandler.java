@@ -27,7 +27,7 @@ public class HelpMenuHandler implements InputMessageHandler {
     }
 
     @Override
-    public BotState getHandlerName() {
+    public BotState getStateForHandling() {
         return BotState.SHOW_HELP_MENU;
     }
 }

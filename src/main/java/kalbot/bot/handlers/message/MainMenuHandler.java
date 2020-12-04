@@ -30,17 +30,17 @@ public class MainMenuHandler implements InputMessageHandler {
     public SendMessage handle(Message message) {
         UserState userState = userStateService.getByChatId(Long.valueOf(message.getFrom().getId()));
         if (userState == null) {
-            userState = new UserState(Long.valueOf(message.getFrom().getId()), BotState.SHOW_MAIN_MENU.getText());
-        } else {
-            userState.setState(BotState.SHOW_MAIN_MENU.getText());
+            userState = new UserState(Long.valueOf(message.getFrom().getId()));
         }
+        userState.setState(BotState.SHOW_MAIN_MENU);
+
         userStateService.save(userState);
         return mainMenuService.getMessage(message.getChatId(),
                 replyMessageService.getEmojiReplyText("reply.mainMenu.message", Emojis.HELLO));
     }
 
     @Override
-    public BotState getHandlerName() {
+    public BotState getStateForHandling() {
         return BotState.SHOW_MAIN_MENU;
     }
 }
