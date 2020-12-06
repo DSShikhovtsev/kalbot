@@ -6,7 +6,5 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 public interface Handlers {
 
-    SendMessage handleLastMessage(BotApiObject botApiObject);
-
     BotState getStateForHandling();
 }

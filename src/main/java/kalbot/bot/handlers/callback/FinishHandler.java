@@ -8,8 +8,10 @@ import kalbot.bot.service.ReplyMessageService;
 import kalbot.bot.utils.DateUtils;
 import kalbot.bot.utils.Emojis;
 import kalbot.domain.UserState;
+import kalbot.exceptions.BotException;
 import kalbot.service.userstate.UserStateService;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.interfaces.BotApiObject;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
@@ -35,12 +37,13 @@ public class FinishHandler implements InputCallbackHandler {
     @Override
     public SendMessage handle(CallbackQuery callbackQuery) {
         UserState userState = userStateService.getByChatId(Long.valueOf(callbackQuery.getFrom().getId()));
-        if (userState != null) {
-            if (callbackQuery.getData().contains("atTime")) {
-                userState.setState(BotState.AT_TIME);
-            } else userState.setState(BotState.FINISH_WORK);
-            userStateService.save(userState);
+        if (userState == null) {
+            throw new BotException();
         }
+        if (callbackQuery.getData().contains("atTime")) {
+            userState.setState(BotState.AT_TIME);
+        } else userState.setState(BotState.FINISH_WORK);
+        userStateService.save(userState);
         if (callbackQuery.getData().contains("yes")) {
             return finishBotService.getFinalMessage(Long.valueOf(callbackQuery.getFrom().getId()),
                     replyMessageService.getEmojiReplyText("reply.finish.yes", Emojis.FINISH_YES) +
@@ -57,7 +60,13 @@ public class FinishHandler implements InputCallbackHandler {
     }
 
     @Override
+    public SendMessage handleLastMessage(BotApiObject botApiObject) {
+        return finishBotService.getMessage(Long.valueOf(((CallbackQuery) botApiObject).getFrom().getId()),
+                replyMessageService.getEmojiReplyText("reply.finish", Emojis.FINISH));
+    }
+
+    @Override
     public BotState getStateForHandling() {
-        return BotState.ICE;
+        return BotState.FINISH;
     }
 }

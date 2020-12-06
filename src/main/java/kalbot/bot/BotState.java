@@ -11,14 +11,12 @@ public enum BotState {
     SHOW_HELP_MENU("Помощь"),
     AGAIN("Сбросить"),
     MISTAKE("Ошибочный вызов"),
-
     FORTRESS("Крепость"),
     GLOBAL_TASTE("Обобщенный вкус"),
-    TASTE("Вкус"),
     TASTE_CHOICE("Выбор вкусов"),
-    BRAND("Производитель"),
     BRAND_CHOICE("Выбор производителя"),
     ICE("Холодок"),
+    FINISH("finish!"),
     FINISH_WORK("Завершение сборки кальяна"),
     AT_TIME("Выбор времени для заказа"),
     START_WORK("Хочу кальян!");

@@ -29,11 +29,6 @@ public class MistakeMessageHandler implements InputMessageHandler {
     }
 
     @Override
-    public SendMessage handleLastMessage(BotApiObject botApiObject) {
-        return null;
-    }
-
-    @Override
     public BotState getStateForHandling() {
         return BotState.MISTAKE;
     }

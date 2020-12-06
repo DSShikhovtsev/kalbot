@@ -49,6 +49,11 @@ public class TelegramFacadeImpl implements TelegramFacade {
             }
             reply.enableMarkdown(true);
             e.printStackTrace();
+        } catch (Exception e) {
+            reply = new SendMessage();
+            reply.setChatId(update.getMessage() != null ? update.getMessage().getChatId() : update.getCallbackQuery().getFrom().getId());
+            reply.enableMarkdown(true);
+            reply.setText("Воспользуйтесь главным меню, пожалуйста");
         }
 
         return reply;

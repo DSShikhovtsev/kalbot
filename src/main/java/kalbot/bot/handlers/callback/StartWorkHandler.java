@@ -7,6 +7,7 @@ import kalbot.bot.service.ReplyMessageService;
 import kalbot.bot.utils.Emojis;
 import kalbot.domain.Kalian;
 import kalbot.domain.UserState;
+import kalbot.exceptions.BotException;
 import kalbot.service.kalian.KalianService;
 import kalbot.service.userstate.UserStateService;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 @Component
 public class StartWorkHandler implements InputMessageHandler {
@@ -44,11 +46,6 @@ public class StartWorkHandler implements InputMessageHandler {
                 replyMessageService.getEmojiReplyText("reply.fortress", Emojis.FORTRESS));
     }
 
-//    @Override
-//    public SendMessage handleLastMessage(BotApiObject botApiObject) {
-//        return null;
-//    }
-
     @Override
     public BotState getStateForHandling() {
         return BotState.START_WORK;
@@ -58,7 +55,7 @@ public class StartWorkHandler implements InputMessageHandler {
         Kalian kalian = new Kalian();
         kalian.setUserChatId(chatId);
         kalian.setDate(LocalDateTime.now());
-        kalian.setTobaccos(new ArrayList<>());
+        kalian.setTobaccos(new HashSet<>());
         return kalianService.save(kalian);
     }
 }

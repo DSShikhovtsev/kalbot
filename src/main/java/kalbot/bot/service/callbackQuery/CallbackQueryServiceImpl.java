@@ -37,10 +37,12 @@ public class CallbackQueryServiceImpl implements CallbackQueryService {
     public SendMessage processCallbackQuery(CallbackQuery callbackQuery) {
         Long userId = Long.valueOf(callbackQuery.getFrom().getId());
         UserState userState = userStateService.getByChatId(userId);
-        InputCallbackHandler handler = findHandler(botUtils.getBotState(userState.getState()));
+        InputCallbackHandler handler = findHandler(botUtils.getBotState(userState.getState().getText()));
         if (callbackQuery.getData().equals("continue")) {
             return handler.handleLastMessage(callbackQuery);
         } else if (callbackQuery.getData().equals("exit")) {
+            userState.setState(BotState.SHOW_MAIN_MENU);
+            userStateService.save(userState);
             return mainMenuService.getMessage(Long.valueOf(callbackQuery.getFrom().getId()),
                     replyMessageService.getEmojiReplyText("reply.mainMenu.message", Emojis.HELLO));
         } else {

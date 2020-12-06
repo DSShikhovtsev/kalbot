@@ -6,7 +6,7 @@ localeTag: ru-RU
 telegrambot:
   username: "@kalian_test_bot"
   botToken: "1154710882:AAFF37X_5RG5xKyQCKSY71t3ncy3X2tUSBM"
-  webHookPath: "https://4fd350eb8e7d.ngrok.io"
+  webHookPath: "https://14b2e372f93c.ngrok.io"
   proxyType: "SOCKS5"
   proxyHost: "localhost"
   proxyPort: 9150

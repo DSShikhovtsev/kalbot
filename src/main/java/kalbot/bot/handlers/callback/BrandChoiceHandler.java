@@ -10,6 +10,7 @@ import kalbot.domain.UserState;
 import kalbot.exceptions.BotException;
 import kalbot.service.userstate.UserStateService;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.interfaces.BotApiObject;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
@@ -37,16 +38,21 @@ public class BrandChoiceHandler implements InputCallbackHandler {
         if (userState == null) {
             throw new BotException();
         }
-
-        if (callbackQuery.getData().contains("~")) {
-            userState.setState(BotState.BRAND);
+        if (callbackQuery.getData().contains("~") || userState.getTastes().size() <= 1) {
+            userState.setState(BotState.ICE);
         }
         brandBotService.addTobacco(userState, callbackQuery);
         userStateService.save(userState);
-        if (callbackQuery.getData().contains("~"))
+        if (callbackQuery.getData().contains("~") || userState.getTastes().size() <= 1)
             return iceBotService.getMessage(Long.valueOf(callbackQuery.getFrom().getId()),
                     replyMessageService.getEmojiReplyText("reply.ice", Emojis.ICE));
         return brandBotService.getCutMessage(Long.valueOf(callbackQuery.getFrom().getId()),
+                replyMessageService.getEmojiReplyText("reply.brand", Emojis.TOBACCO_BRAND));
+    }
+
+    @Override
+    public SendMessage handleLastMessage(BotApiObject botApiObject) {
+        return brandBotService.getCutMessage(Long.valueOf(((CallbackQuery) botApiObject).getFrom().getId()),
                 replyMessageService.getEmojiReplyText("reply.brand", Emojis.TOBACCO_BRAND));
     }
 

@@ -8,6 +8,7 @@ import kalbot.bot.utils.Emojis;
 import kalbot.domain.UserState;
 import kalbot.service.userstate.UserStateService;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.interfaces.BotApiObject;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
