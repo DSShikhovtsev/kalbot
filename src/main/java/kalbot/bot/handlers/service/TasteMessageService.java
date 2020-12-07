@@ -110,32 +110,4 @@ public class TasteMessageService {
         end.add(button);
         rowList.add(end);
     }
-
-    /*private ReplyKeyboardMarkup getMainMenuKeyboard(String emoji) {
-        ReplyKeyboardMarkup replyKeyboardMarkup = keyboardUtil.getReplyKeyboardMarkup();
-        List<KeyboardRow> keyboard = new ArrayList<>();
-        KeyboardRow row = new KeyboardRow();
-        row.add(new KeyboardButton("Вернуться в меню " + emoji));
-        keyboard.add(row);
-        replyKeyboardMarkup.setKeyboard(keyboard);
-        return replyKeyboardMarkup;
-    }
-
-    private String convertMessage(String message, String emojiMessage) {
-        Integer fortress = Integer.parseInt(message);
-        List<Taste> tastes = tasteService.getTasteByFortress(fortress);
-        StringBuilder builder = new StringBuilder();
-        builder.append(emojiMessage).append("\n");
-        int i = 1;
-        for (Taste taste : tastes) {
-            builder.append(i)
-                    .append(". ")
-                    .append(taste.getTaste())
-                    .append(": ")
-                    .append(taste.getDescription())
-                    .append("\n");
-            i++;
-        }
-        return builder.toString();
-    }*/
 }

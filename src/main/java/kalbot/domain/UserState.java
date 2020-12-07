@@ -42,10 +42,4 @@ public class UserState {
     public UserState(Long userChatId) {
         this.userChatId = userChatId;
     }
-
-    public void resetState() {
-        state = BotState.SHOW_MAIN_MENU;
-        tastes = new ArrayList<>();
-        globalTasteId = null;
-    }
 }

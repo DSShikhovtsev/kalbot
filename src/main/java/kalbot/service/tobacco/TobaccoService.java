@@ -1,8 +1,9 @@
 package kalbot.service.tobacco;
 
-import kalbot.domain.Brand;
 import kalbot.domain.Fortress;
 import kalbot.domain.Tobacco;
+import kalbot.domain.UserState;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface TobaccoService {
     List<Tobacco> getAllByFortress(Fortress fortress);
 
     Tobacco getByBrandIdAndTasteId(Long brandId, Long tasteId);
+
+    void addTobaccoByBrand(UserState userState, CallbackQuery callbackQuery);
 }

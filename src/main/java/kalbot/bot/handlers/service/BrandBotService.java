@@ -27,13 +27,11 @@ public class BrandBotService {
     private final BrandService brandService;
     private final ReplyKeyboardUtil keyboardUtil;
     private final UserStateService userStateService;
-    private final TobaccoService tobaccoService;
 
-    public BrandBotService(BrandService brandService, ReplyKeyboardUtil keyboardUtil, UserStateService userStateService, TobaccoService tobaccoService) {
+    public BrandBotService(BrandService brandService, ReplyKeyboardUtil keyboardUtil, UserStateService userStateService) {
         this.brandService = brandService;
         this.keyboardUtil = keyboardUtil;
         this.userStateService = userStateService;
-        this.tobaccoService = tobaccoService;
     }
 
     public SendMessage getMessage(Long chatId, String message) {
@@ -117,20 +115,5 @@ public class BrandBotService {
             rowList.add(row);
         }
         return rowList;
-    }
-
-    public void addTobacco(UserState userState, CallbackQuery callbackQuery) {
-        Long brandId = Long.valueOf(callbackQuery.getData()
-                .substring(0, callbackQuery.getData().lastIndexOf("|")));
-        long tasteId;
-        if (callbackQuery.getData().contains("~")) {
-            tasteId = Long.parseLong(callbackQuery.getData()
-                    .substring(callbackQuery.getData().lastIndexOf("|") + 1,
-                            callbackQuery.getData().lastIndexOf("~")));
-        } else {
-            tasteId = Long.parseLong(callbackQuery.getData()
-                    .substring(callbackQuery.getData().lastIndexOf("|") + 1));
-        }
-        userState.getKalian().getTobaccos().add(tobaccoService.getByBrandIdAndTasteId(brandId, tasteId));
     }
 }

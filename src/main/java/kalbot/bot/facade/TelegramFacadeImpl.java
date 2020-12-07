@@ -37,7 +37,7 @@ public class TelegramFacadeImpl implements TelegramFacade {
             if (message != null && message.hasText()) {
                 log.info("New message from User:{}, chatId: {},  with text: {}",
                         message.getFrom().getUserName(), message.getChatId(), message.getText());
-                reply = messageService.handleMessage(message);//todo Женя как-то получил NPE
+                reply = messageService.handleMessage(message);
             }
         } catch (BotException e) {
             reply = new SendMessage();

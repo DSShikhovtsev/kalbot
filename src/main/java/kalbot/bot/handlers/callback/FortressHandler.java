@@ -47,13 +47,6 @@ public class FortressHandler implements InputCallbackHandler {
 
     @Override
     public SendMessage handleLastMessage(BotApiObject botApiObject) {
-//        CallbackQuery callbackQuery = (CallbackQuery) botApiObject;
-//        UserState userState = userStateService.getByChatId(Long.valueOf(callbackQuery.getFrom().getId()));
-//        if (userState == null) {
-//            throw new BotException();
-//        }
-//        return globalTasteBotService.getMessage(Long.valueOf(callbackQuery.getFrom().getId()), userState.getKalian().getFortressId(),
-//                replyMessageService.getEmojiReplyText("reply.taste.global", Emojis.TASTE_GLOBAL));
         return fortressBotService.getMessage(Long.valueOf(((CallbackQuery) botApiObject).getFrom().getId()),
                 replyMessageService.getEmojiReplyText("reply.fortress", Emojis.FORTRESS));
     }

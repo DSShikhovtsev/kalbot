@@ -1,7 +1,6 @@
 package kalbot.bot.service.message;
 
 import kalbot.exceptions.BotException;
-import kalbot.exceptions.StateException;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 

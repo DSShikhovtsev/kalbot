@@ -3,8 +3,10 @@ package kalbot.service.tobacco;
 import kalbot.domain.Brand;
 import kalbot.domain.Fortress;
 import kalbot.domain.Tobacco;
+import kalbot.domain.UserState;
 import kalbot.repository.TobaccoRepository;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.List;
 
@@ -50,5 +52,21 @@ public class TobaccoServiceImpl implements TobaccoService {
     @Override
     public Tobacco getByBrandIdAndTasteId(Long brandId, Long tasteId) {
         return repository.findByBrandIdAndTasteId(brandId, tasteId);
+    }
+
+    @Override
+    public void addTobaccoByBrand(UserState userState, CallbackQuery callbackQuery) {
+        Long brandId = Long.valueOf(callbackQuery.getData()
+                .substring(0, callbackQuery.getData().lastIndexOf("|")));
+        long tasteId;
+        if (callbackQuery.getData().contains("~")) {
+            tasteId = Long.parseLong(callbackQuery.getData()
+                    .substring(callbackQuery.getData().lastIndexOf("|") + 1,
+                            callbackQuery.getData().lastIndexOf("~")));
+        } else {
+            tasteId = Long.parseLong(callbackQuery.getData()
+                    .substring(callbackQuery.getData().lastIndexOf("|") + 1));
+        }
+        userState.getKalian().getTobaccos().add(getByBrandIdAndTasteId(brandId, tasteId));
     }
 }

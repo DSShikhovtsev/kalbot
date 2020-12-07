@@ -8,14 +8,12 @@ import kalbot.bot.service.ReplyMessageService;
 import kalbot.bot.utils.Emojis;
 import kalbot.domain.UserState;
 import kalbot.exceptions.BotException;
+import kalbot.service.tobacco.TobaccoService;
 import kalbot.service.userstate.UserStateService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.interfaces.BotApiObject;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-
-import java.util.ArrayList;
-import java.util.HashSet;
 
 @Component
 public class BrandChoiceHandler implements InputCallbackHandler {
@@ -24,12 +22,14 @@ public class BrandChoiceHandler implements InputCallbackHandler {
     private final UserStateService userStateService;
     private final BrandBotService brandBotService;
     private final IceBotService iceBotService;
+    private final TobaccoService tobaccoService;
 
-    public BrandChoiceHandler(ReplyMessageService replyMessageService, UserStateService userStateService, BrandBotService brandBotService, IceBotService iceBotService) {
+    public BrandChoiceHandler(ReplyMessageService replyMessageService, UserStateService userStateService, BrandBotService brandBotService, IceBotService iceBotService, TobaccoService tobaccoService) {
         this.replyMessageService = replyMessageService;
         this.userStateService = userStateService;
         this.brandBotService = brandBotService;
         this.iceBotService = iceBotService;
+        this.tobaccoService = tobaccoService;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class BrandChoiceHandler implements InputCallbackHandler {
         if (callbackQuery.getData().contains("~") || userState.getTastes().size() <= 1) {
             userState.setState(BotState.ICE);
         }
-        brandBotService.addTobacco(userState, callbackQuery);
+        tobaccoService.addTobaccoByBrand(userState, callbackQuery);
         userStateService.save(userState);
         if (callbackQuery.getData().contains("~") || userState.getTastes().size() <= 1)
             return iceBotService.getMessage(Long.valueOf(callbackQuery.getFrom().getId()),
