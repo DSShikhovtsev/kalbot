@@ -37,7 +37,6 @@ public class StartWorkHandler implements InputMessageHandler {
     @Override
     public SendMessage handle(Message message) {
         UserState userState = userStateService.getByChatId(Long.valueOf(message.getFrom().getId()));
-        // todo Пошел в жопу, послать юзера на начальный экран! иди на начальный экран!
         userState.setState(BotState.FORTRESS);
         userState.setTastes(new ArrayList<>());
         userState.setKalian(initKalian(Long.valueOf(message.getFrom().getId())));
